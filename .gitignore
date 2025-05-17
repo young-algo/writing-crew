@@ -15,5 +15,7 @@ wheels/
 # project files
 cline_project_setup.md
 test_env.py
+.gitignore
+
 
 # IDE files
