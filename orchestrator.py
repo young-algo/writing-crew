@@ -6,6 +6,7 @@ from llm_providers.google_provider import GoogleProvider
 from llm_providers.openai_provider import OpenAIProvider
 from llm_providers.anthropic_provider import AnthropicProvider
 from llm_providers.openrouter_provider import OpenRouterProvider
+from prompt_loader import load_concept
 import config
 import os
 
@@ -40,10 +41,7 @@ def run_story_generation(concept: str):
     return draft
 
 if __name__ == "__main__":
-    story_concept = "Charlie Laube, an adorable four-year old all-brown lagotto romagnolo that thinks in English but can't speak to humans" \
-    "is charged with murder of several stuffed animal dinosaurs" \
-    "and her owners (Kevin and Simone) are called to trial as character witnesses. " \
-    "Kevin is also very funny" \
-    "Charlie is ultimately acquitted of her _crimes_."  # example concept
+    # Load the example story concept from the concepts directory
+    story_concept = load_concept("example_story.txt")
     final_story = run_story_generation(story_concept)
     print("Final Story:\n", final_story)

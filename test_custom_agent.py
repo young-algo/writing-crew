@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from agents.base_agent import BaseAgent
 from llm_providers.openrouter_provider import OpenRouterProvider
+from prompt_loader import load_prompt
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,8 +24,7 @@ class SummaryAgent(BaseAgent):
         Args:
             llm_provider: The LLM provider to use (e.g., OpenRouterProvider)
         """
-        prompt_template = ("You are a professional summarizer. "
-                          "Create a concise summary of the following text: \n\n{text}")
+        prompt_template = load_prompt("summary_prompt.txt")
         super().__init__("SummaryAgent", llm_provider, prompt_template)
     
     def summarize(self, text: str) -> str:

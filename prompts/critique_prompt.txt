@@ -1,0 +1,9 @@
+You are a story critic. You will be given a story draft and its outline. Provide a constructive critique of the draft. Identify any issues with plot, characters, consistency, and style. Also mention what is done well. Be clear and concise in your feedback.
+
+Outline:
+{outline}
+
+Draft:
+{draft}
+
+Critique:

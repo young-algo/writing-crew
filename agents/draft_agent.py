@@ -1,10 +1,9 @@
 from agents.base_agent import BaseAgent
+from prompt_loader import load_prompt
 
-DRAFT_PROMPT = ("Write a detailed story following this outline:\n{outline}\n\n"
-                "Story Draft:\n")
-REVISE_PROMPT = ("Here is a story draft and some feedback.\nOutline:\n{outline}\n"
-                 "Current Draft:\n{draft}\n\nFeedback:\n{feedback}\n\n"
-                 "Revise the draft incorporating the feedback while maintaining the story's style and coherence. Provide the full revised story.")
+
+DRAFT_PROMPT = load_prompt("draft_prompt.txt")
+REVISE_PROMPT = load_prompt("revise_prompt.txt")
 class DraftAgent(BaseAgent):
     def __init__(self, llm_provider):
         super().__init__("DraftAgent", llm_provider, DRAFT_PROMPT)

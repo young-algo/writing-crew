@@ -1,7 +1,8 @@
 from agents.base_agent import BaseAgent
+from prompt_loader import load_prompt
 
-OUTLINE_PROMPT = ("You are a creative writing planner. Outline a story about \"{concept}\". "
-                  "Include key plot points from introduction to conclusion, with bullet points.")
+
+OUTLINE_PROMPT = load_prompt("outline_prompt.txt")
 class OutlineAgent(BaseAgent):
     def __init__(self, llm_provider):
         super().__init__("OutlineAgent", llm_provider, OUTLINE_PROMPT)
