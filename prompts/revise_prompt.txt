@@ -1,0 +1,10 @@
+Here is a story draft and some feedback.
+Outline:
+{outline}
+Current Draft:
+{draft}
+
+Feedback:
+{feedback}
+
+Revise the draft incorporating the feedback while maintaining the story's style and coherence. Provide the full revised story.

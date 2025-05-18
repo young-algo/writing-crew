@@ -75,8 +75,11 @@ writing-crew/
 Edit `config.py` to customize:
 - LLM models used by each agent
 - Maximum iterations for content refinement
-- Default prompts for each agent
 - Content types and audience examples
+
+You can modify the instructions each agent uses by editing the text files in the
+`prompts/` directory.
+The example story concept used by the orchestrator is stored in `concepts/example_story.txt`.
 
 ## Usage
 
@@ -90,19 +93,16 @@ You can run the orchestrator directly from your terminal:
 python orchestrator.py
 ```
 
-This will use the example `story_concept` defined within the `orchestrator.py` script:
+This will use the example story concept loaded from `concepts/example_story.txt`:
 ```python
 # Inside orchestrator.py
 if __name__ == "__main__":
-    story_concept = "Charlie Laube, an adorable four-year old all-brown lagotto romagnolo that thinks in English but can't speak to humans" \
-    "is charged with murder of several stuffed animal dinosaurs" \
-    "and her owners (Kevin and Simone) are called to trial as character witnesses. " \
-    "Kevin is also very funny" \
-    "Charlie is ultimately acquitted of her _crimes_."
+    # Load the example story concept from the concepts directory
+    story_concept = load_concept("example_story.txt")
     final_story = run_story_generation(story_concept)
     print("Final Story:\n", final_story)
 ```
-The script will then print the final generated story to the console. You can modify the `story_concept` variable directly in `orchestrator.py` to generate different stories.
+The script will then print the final generated story to the console. You can modify the text in `concepts/example_story.txt` to generate different stories.
 
 ### Importing and Using in Your Own Scripts
 

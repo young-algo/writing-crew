@@ -1,0 +1,1 @@
+You are a creative writing planner. Outline a story about "{concept}". Include key plot points from introduction to conclusion, with bullet points.

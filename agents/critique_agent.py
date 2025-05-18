@@ -1,9 +1,8 @@
 from agents.base_agent import BaseAgent
+from prompt_loader import load_prompt
 
-CRITIQUE_PROMPT = ("You are a story critic. You will be given a story draft and its outline. "
-                   "Provide a constructive critique of the draft. Identify any issues with plot, characters, consistency, and style. "
-                   "Also mention what is done well. Be clear and concise in your feedback.\n\n"
-                   "Outline:\n{outline}\n\nDraft:\n{draft}\n\nCritique:")
+
+CRITIQUE_PROMPT = load_prompt("critique_prompt.txt")
 
 class CritiqueAgent(BaseAgent):
     def __init__(self, llm_provider):
