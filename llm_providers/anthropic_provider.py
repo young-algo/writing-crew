@@ -34,7 +34,7 @@ class AnthropicProvider:
                 "Please install it using 'pip install anthropic'."
             )
     
-    def generate_text(self, system_prompt, user_prompt, temperature=0.3, max_tokens=15000):
+    def generate_text(self, system_prompt, user_prompt, temperature=0.3, max_tokens=25000):
         """
         Generate text using the Anthropic API.
         

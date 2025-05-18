@@ -12,8 +12,8 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # Model configurations
-OPENAI_MODEL = "gpt-4o"                      # Updated model name
-ANTHROPIC_MODEL = "claude-3-7-sonnet-20250219"  # Updated specific model version
+OPENAI_MODEL = "gpt-4o"                      
+ANTHROPIC_MODEL = "claude-3-7-sonnet-20250219"  
 GOOGLE_MODEL = "gemini-2.5-pro-preview-03-25"   
-OPENROUTER_MODEL = "openai/o3" # Updated to valid model name
-MAX_ITERATIONS = 2  # number of feedback loops
+OPENROUTER_MODEL = "openai/o3" 
+MAX_ITERATIONS = 2  

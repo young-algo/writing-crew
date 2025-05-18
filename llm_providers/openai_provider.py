@@ -31,7 +31,7 @@ class OpenAIProvider:
                 "Please install it using 'pip install openai'."
             )
     
-    def generate_text(self, system_prompt, user_prompt, temperature=0.7, max_tokens=2000):
+    def generate_text(self, system_prompt, user_prompt, temperature=0.7, max_tokens=25000):
         """
         Generate text using the OpenAI API.
         

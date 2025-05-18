@@ -21,11 +21,14 @@ writing-crew/
 │   ├── draft_agent.py        # DraftAgent class (GPT-4)
 │   ├── critique_agent.py     # CritiqueAgent class (Claude)
 ├── llm_providers/
-│   ├── openai_provider.py    # Wrapper for OpenAI GPT-4 API calls
+│   ├── openai_provider.py    # Wrapper for OpenAI API calls
 │   ├── anthropic_provider.py # Wrapper for Anthropic Claude API
 │   ├── google_provider.py    # Wrapper for Google Gemini API
+│   ├── openrouter_provider.py  # Wrapper for OpenRouter API calls
 ├── orchestrator.py           # The coordination logic (bringing agents together)
 ├── config.py                 # Configuration (API keys, model names, etc.)
+├── test_all_providers.py     # Script to test all LLM providers
+├── test_custom_agent.py      # Script to test a custom agent with OpenRouter
 └── README.md                 # This documentation file
 ```
 
@@ -37,17 +40,35 @@ writing-crew/
    cd writing-crew
    ```
 
-2. Install dependencies:
+2. Install dependencies using UV:
+   First, ensure you have UV installed. If not, you can install it via pip:
    ```bash
-   pip install -r requirements.txt
+   pip install uv
+   ```
+   Then, create a virtual environment and install dependencies:
+   ```bash
+   uv venv
+   uv pip sync pyproject.toml 
+   # or uv pip sync uv.lock if you prefer to use the lock file
+   ```
+   Activate the virtual environment (the command might vary based on your shell):
+   ```bash
+   source .venv/bin/activate 
    ```
 
 3. Set up your API keys as environment variables:
-   ```bash
-   export OPENAI_API_KEY=your_openai_api_key
-   export ANTHROPIC_API_KEY=your_anthropic_api_key
-   export GOOGLE_API_KEY=your_google_api_key
+   Create a `.env` file in the project root or set environment variables directly.
+   Example `.env` file:
    ```
+   OPENAI_API_KEY="your_openai_api_key"
+   ANTHROPIC_API_KEY="your_anthropic_api_key"
+   GOOGLE_API_KEY="your_google_api_key"
+   OPENROUTER_API_KEY="your_openrouter_api_key"
+   # Optional for OpenRouter provider rankings:
+   # SITE_URL="your_site_url" 
+   # SITE_NAME="your_site_name"
+   ```
+   The application uses `python-dotenv` to load these variables.
 
 ## Configuration
 
@@ -57,64 +78,84 @@ Edit `config.py` to customize:
 - Default prompts for each agent
 - Content types and audience examples
 
-## Usage Examples
+## Usage
 
-### Basic Usage
+The primary way to use Writing Crew is by running the `orchestrator.py` script. This script coordinates the different LLM agents to generate a story based on a given concept.
 
-```python
-from orchestrator import Orchestrator
+### Running from the Command Line
 
-# Initialize the orchestrator
-orchestrator = Orchestrator()
+You can run the orchestrator directly from your terminal:
 
-# Run the basic pipeline (one pass through all agents)
-result = orchestrator.run_pipeline(
-    topic="Artificial Intelligence Ethics",
-    audience="general_readers",
-    content_type="article",
-    outline_prompt="Create a comprehensive outline for an article about AI ethics.",
-    draft_prompt="Write a detailed draft based on the provided outline.",
-    critique_prompt="Provide detailed feedback on this draft."
-)
-
-# Access the results
-print("OUTLINE:")
-print(result['outline'])
-print("\nDRAFT:")
-print(result['draft'])
-print("\nCRITIQUE:")
-print(result['critique'])
+```bash
+python orchestrator.py
 ```
 
-### Iterative Refinement
+This will use the example `story_concept` defined within the `orchestrator.py` script:
+```python
+# Inside orchestrator.py
+if __name__ == "__main__":
+    story_concept = "Charlie Laube, an adorable four-year old all-brown lagotto romagnolo that thinks in English but can't speak to humans" \
+    "is charged with murder of several stuffed animal dinosaurs" \
+    "and her owners (Kevin and Simone) are called to trial as character witnesses. " \
+    "Kevin is also very funny" \
+    "Charlie is ultimately acquitted of her _crimes_."
+    final_story = run_story_generation(story_concept)
+    print("Final Story:\n", final_story)
+```
+The script will then print the final generated story to the console. You can modify the `story_concept` variable directly in `orchestrator.py` to generate different stories.
+
+### Importing and Using in Your Own Scripts
+
+Alternatively, you can import the `run_story_generation` function into your own Python scripts:
 
 ```python
-# Run the iterative pipeline with multiple refinement cycles
-result = orchestrator.run_iterative_pipeline(
-    topic="Machine Learning for Beginners",
-    audience="beginners",
-    content_type="tutorial",
-    outline_prompt="Create a beginner-friendly tutorial outline about machine learning.",
-    draft_prompt="Write an approachable tutorial based on the outline.",
-    critique_prompt="Identify areas where the tutorial could be clearer or more beginner-friendly.",
-    revision_prompt="Revise the tutorial to be more accessible to beginners."
-)
+from orchestrator import run_story_generation
+import config # Ensure config.py is set up with your API keys and model preferences
 
-# Access the final draft
-print("FINAL DRAFT:")
-print(result['final_draft'])
+# Define your story concept
+my_concept = "A futuristic detective investigating a crime in a city run by sentient AI."
 
-# Or examine the entire iteration history
-for i, iteration in enumerate(result['iterations']):
-    print(f"ITERATION {i+1}:")
-    print(f"Draft:\n{iteration['draft'][:500]}...\n")
-    print(f"Critique:\n{iteration['critique'][:500]}...\n")
+# Generate the story
+final_story_output = run_story_generation(my_concept)
+
+# Print or process the final story
+print("Generated Story:\n", final_story_output)
 ```
+
+**How it Works:**
+
+The `run_story_generation` function in `orchestrator.py`:
+1. Initializes the necessary LLM providers (Google for outline, OpenRouter for draft, Anthropic for critique by default, configurable in `orchestrator.py` and `config.py`).
+2. Creates instances of the `OutlineAgent`, `DraftAgent`, and `CritiqueAgent`.
+3. **Outline Generation**: The `OutlineAgent` generates an initial story outline based on your concept.
+4. **Draft Creation**: The `DraftAgent` writes the first draft of the story using the generated outline.
+5. **Iterative Refinement**:
+   - The `CritiqueAgent` reviews the draft and provides feedback.
+   - The `DraftAgent` revises the draft based on this feedback.
+   - This critique and revision cycle repeats for a number of iterations defined by `MAX_ITERATIONS` in `config.py`.
+6. The final revised draft is returned.
+
+Make sure your API keys are correctly set up in `config.py` (or as environment variables if `config.py` loads them that way) before running the orchestrator.
+
+## Testing
+
+The project includes several test scripts to verify the functionality of the LLM providers and agent integrations:
+
+- **`test_all_providers.py`**: This script tests all configured LLM providers (OpenAI, Anthropic, Google, OpenRouter) by using them with the `OutlineAgent`. It helps ensure that each provider is correctly set up and can communicate with its respective API.
+  ```bash
+  python test_all_providers.py
+  ```
+  *(Note: Requires API keys for all tested providers to be set in your environment.)*
+
+- **`test_custom_agent.py`**: This script demonstrates how to create a new custom agent (a `SummaryAgent` in this example) and use it with the `OpenRouterProvider`. It serves as an example of the flexibility of the agent and provider architecture.
+  ```bash
+  python test_custom_agent.py
+  ```
+  *(Note: Requires `OPENROUTER_API_KEY` to be set.)*
+
+Before running these tests, ensure you have installed the necessary dependencies using UV as described in the "Installation" section and have the required API keys set.
 
 ## License
 
 [MIT License](LICENSE)
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
