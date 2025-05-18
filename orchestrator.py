@@ -37,6 +37,12 @@ def run_story_generation(concept: str):
     return draft
 
 if __name__ == "__main__":
-    story_concept = "Charlie, a lagotto romagnolo that thinks in English is charged with murder of several stuffed animal dinosaurs and her owners (Kevin and Simone) are called to trial as character witnesses. She is ultimately acquitted."  # example concept
+    story_concept = "Charlie, an adorable four-year old all-brown lagotto romagnolo that thinks in English and is addicted to fetch" \
+    "is charged with murder of several stuffed animal dinosaurs" \
+    "and her owners (Kevin and Simone) are called to trial as character witnesses. " \
+    "Simone is the strict parent that makes she charlie is well-behaved" \
+    "Kevin is the weak parent that sneaks tricks to Charlie, talks to her like a baby, and tells her how much he loves her all the time" \
+    "Kevin is also very funny" \
+    "Charlie is ultimately acquitted of her _crimes_."  # example concept
     final_story = run_story_generation(story_concept)
     print("Final Story:\n", final_story)
